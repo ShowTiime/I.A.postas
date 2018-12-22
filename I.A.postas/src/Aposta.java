@@ -36,7 +36,7 @@ public class Aposta {
 	private String oppConferencia;
 	private double oppScore;
 	private int oppPosicao;
-	private int oppb2b;
+	private int oppB2b;
 	private int oppRoadTrip;
 	private int oppTitularLesionado;
 	private int oppAllStars;
@@ -72,7 +72,7 @@ public class Aposta {
 		this.setOppConferencia(oppConferencia);
 		this.setOppScore(oppScore);
 		this.setOppPosicao(oppPosicao);
-		this.setOppb2b(oppb2b);
+		this.setOppB2b(oppb2b);
 		this.setOppRoadTrip(oppRoadTrip);
 		this.setOppTitularLesionado(oppTitularLesionado);
 		this.setOppAllStars(oppAllStars);
@@ -248,12 +248,12 @@ public class Aposta {
 		this.oppPosicao = oppPosicao;
 	}
 
-	public int getOppb2b() {
-		return oppb2b;
+	public int getOppB2b() {
+		return oppB2b;
 	}
 
-	public void setOppb2b(int oppb2b) {
-		this.oppb2b = oppb2b;
+	public void setOppB2b(int oppb2b) {
+		this.oppB2b = oppb2b;
 	}
 
 	public int getOppRoadTrip() {
@@ -288,7 +288,7 @@ public class Aposta {
 				+ ", titularLesionado=" + titularLesionado + ", allStars=" + allStars + ", oppEmCasa=" + oppEmCasa
 				+ ", oppForaDeCasa=" + oppForaDeCasa + ", oppVitorias5jogos=" + oppVitorias5jogos
 				+ ", oppDerrotas5jogos=" + oppDerrotas5jogos + ", oppStreak=" + oppStreak + ", oppConferencia="
-				+ oppConferencia + ", oppScore=" + oppScore + ", oppPosicao=" + oppPosicao + ", oppb2b=" + oppb2b
+				+ oppConferencia + ", oppScore=" + oppScore + ", oppPosicao=" + oppPosicao + ", oppb2b=" + oppB2b
 				+ ", oppRoadTrip=" + oppRoadTrip + ", oppTitularLesionado=" + oppTitularLesionado + ", oppAllStars="
 				+ oppAllStars + "]";
 	}

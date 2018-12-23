@@ -285,6 +285,9 @@ public class NaiveBayes {
 			}
 		}
 		
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
+		
 		//Cálculo P(EmCasa|Sim) e P(EmCasa|Nao).
 		pEmCasaSim = (double) countSim / countPSim;
 		pEmCasaNao = (double) countNao / countPNao;
@@ -305,6 +308,9 @@ public class NaiveBayes {
 				}
 			}
 		}
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
 		
 		//Cálculo P(ForaDeCasa|Sim) e P(ForaDeCasa|Nao).
 		pForaDeCasaSim = (double) countSim / countPSim;
@@ -326,7 +332,10 @@ public class NaiveBayes {
 				}
 			}
 		}
-				
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
+			
 		//Cálculo P(Vitorias5jogos|Sim) e P(Vitorias5jogos|Nao).
 		pVitorias5jogosSim = (double) countSim / countPSim;
 		pVitorias5jogosNao = (double) countNao / countPNao;
@@ -347,6 +356,9 @@ public class NaiveBayes {
 				}
 			}
 		}
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
 		
 		//Cálculo P(Derrotas5jogos|Sim) e P(Derrotas5jogos|Nao).
 		pDerrotas5jogosSim = (double) countSim / countPSim;
@@ -368,6 +380,9 @@ public class NaiveBayes {
 				}
 			}
 		}
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
 		
 		//Cálculo P(Streak|Sim) e P(Streak|Nao).
 		pStreakSim = (double) countSim / countPSim;
@@ -389,6 +404,9 @@ public class NaiveBayes {
 				}
 			}
 		}
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
 		
 		//Cálculo P(Conferencia|Sim) e P(Conferencia|Nao).
 		pConferenciaSim = (double) countSim / countPSim;
@@ -401,15 +419,18 @@ public class NaiveBayes {
 		//igual ao atributo Score do objeto passado como argumento.
 		for(int i = 0; i < NaiveBayes.database.size(); i++) {
 			if(NaiveBayes.database.get(i).getClasse().equals("sim")) {
-				if(aposta.getScore() == NaiveBayes.database.get(i).getScore()) {
+				if(aposta.getScore() - 0.05 >= NaiveBayes.database.get(i).getScore() && aposta.getScore() + 0.05 <= NaiveBayes.database.get(i).getScore()) {
 					countSim++;
 				}
 			} else {
-				if(aposta.getScore() == NaiveBayes.database.get(i).getScore()) {
+				if(aposta.getScore() - 0.05 >= NaiveBayes.database.get(i).getScore() && aposta.getScore() + 0.05 <= NaiveBayes.database.get(i).getScore()) {
 					countNao++;
 				}
 			}
 		}
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
 		
 		//Cálculo P(Score|Sim) e P(Score|Nao).
 		pScoreSim = (double) countSim / countPSim;
@@ -431,6 +452,9 @@ public class NaiveBayes {
 				}
 			}
 		}
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
 		
 		//Cálculo P(Posicao|Sim) e P(Posicao|Nao).
 		pPosicaoSim = (double) countSim / countPSim;
@@ -452,6 +476,9 @@ public class NaiveBayes {
 				}
 			}
 		}
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
 		
 		//Cálculo P(b2b|Sim) e P(b2b|Nao).
 		pb2bSim = (double) countSim / countPSim;
@@ -473,6 +500,9 @@ public class NaiveBayes {
 				}
 			}
 		}
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
 		
 		//Cálculo P(RoadTrip|Sim) e P(RoadTrip|Nao).
 		pRoadTripSim = (double) countSim / countPSim;
@@ -494,6 +524,9 @@ public class NaiveBayes {
 				}
 			}
 		}
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
 		
 		//Cálculo P(TitularLesionado|Sim) e P(TitularLesionado|Nao).
 		pTitularLesionadoSim = (double) countSim / countPSim;
@@ -515,6 +548,9 @@ public class NaiveBayes {
 				}
 			}
 		}
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
 		
 		//Cálculo P(AllStars|Sim) e P(AllStars|Nao).
 		pAllStarsSim = (double) countSim / countPSim;
@@ -540,6 +576,9 @@ public class NaiveBayes {
 				}
 			}
 		}
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
 		
 		//Cálculo P(OppEmCasa|Sim) e P(OppEmCasa|Nao).
 		pOppEmCasaSim = (double) countSim / countPSim;
@@ -561,6 +600,9 @@ public class NaiveBayes {
 				}
 			}
 		}
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
 		
 		//Cálculo P(OppForaDeCasa|Sim) e P(OppForaDeCasa|Nao).
 		pOppForaDeCasaSim = (double) countSim / countPSim;
@@ -582,7 +624,10 @@ public class NaiveBayes {
 				}
 			}
 		}
-				
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
+		
 		//Cálculo P(OppVitorias5jogos|Sim) e P(OppVitorias5jogos|Nao).
 		pOppVitorias5jogosSim = (double) countSim / countPSim;
 		pOppVitorias5jogosNao = (double) countNao / countPNao;
@@ -603,6 +648,9 @@ public class NaiveBayes {
 				}
 			}
 		}
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
 		
 		//Cálculo P(OppDerrotas5jogos|Sim) e P(OppDerrotas5jogos|Nao).
 		pOppDerrotas5jogosSim = (double) countSim / countPSim;
@@ -624,6 +672,9 @@ public class NaiveBayes {
 				}
 			}
 		}
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
 		
 		//Cálculo P(OppStreak|Sim) e P(OppStreak|Nao).
 		pOppStreakSim = (double) countSim / countPSim;
@@ -645,6 +696,9 @@ public class NaiveBayes {
 				}
 			}
 		}
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
 		
 		//Cálculo P(OppConferencia|Sim) e P(OppConferencia|Nao).
 		pOppConferenciaSim = (double) countSim / countPSim;
@@ -657,15 +711,18 @@ public class NaiveBayes {
 		//igual ao atributo OppScore do objeto passado como argumento.
 		for(int i = 0; i < NaiveBayes.database.size(); i++) {
 			if(NaiveBayes.database.get(i).getClasse().equals("sim")) {
-				if(aposta.getOppScore() == NaiveBayes.database.get(i).getOppScore()) {
+				if(aposta.getOppScore() - 0.05 >= NaiveBayes.database.get(i).getOppScore() && aposta.getOppScore() + 0.05 <= NaiveBayes.database.get(i).getOppScore()) {
 					countSim++;
 				}
 			} else {
-				if(aposta.getOppScore() == NaiveBayes.database.get(i).getOppScore()) {
+				if(aposta.getOppScore() - 0.05 >= NaiveBayes.database.get(i).getOppScore() && aposta.getOppScore() + 0.05 <= NaiveBayes.database.get(i).getOppScore()) {
 					countNao++;
 				}
 			}
 		}
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
 		
 		//Cálculo P(OppScore|Sim) e P(OppScore|Nao).
 		pOppScoreSim = (double) countSim / countPSim;
@@ -687,6 +744,9 @@ public class NaiveBayes {
 				}
 			}
 		}
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
 		
 		//Cálculo P(OppPosicao|Sim) e P(OppPosicao|Nao).
 		pOppPosicaoSim = (double) countSim / countPSim;
@@ -708,6 +768,9 @@ public class NaiveBayes {
 				}
 			}
 		}
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
 		
 		//Cálculo P(OppB2b|Sim) e P(OppB2b|Nao).
 		pOppB2bSim = (double) countSim / countPSim;
@@ -729,6 +792,9 @@ public class NaiveBayes {
 				}
 			}
 		}
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
 		
 		//Cálculo P(OppRoadTrip|Sim) e P(OppRoadTrip|Nao).
 		pOppRoadTripSim = (double) countSim / countPSim;
@@ -750,6 +816,9 @@ public class NaiveBayes {
 				}
 			}
 		}
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
 		
 		//Cálculo P(OppTitularLesionado|Sim) e P(OppTitularLesionado|Nao).
 		pOppTitularLesionadoSim = (double) countSim / countPSim;
@@ -771,6 +840,9 @@ public class NaiveBayes {
 				}
 			}
 		}
+
+		if (countSim == 0) countSim++;
+		if (countNao == 0) countNao++;
 		
 		//Cálculo P(OppAllStars|Sim) e P(OppAllStars|Nao).
 		pOppAllStarsSim = (double) countSim / countPSim;

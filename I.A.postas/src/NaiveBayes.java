@@ -3,50 +3,47 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 /*
  * 
- * A classe NaiveBayes é onde constará o algoritmo e a base de dados.
- * O ArrayList database é composto por toda a base de dados.
+ * A classe NaiveBayes ï¿½ onde constarï¿½ o algoritmo e a base de dados.
+ * O ArrayList database ï¿½ composto por toda a base de dados.
  * 
  */
 
 public class NaiveBayes {
 	
-	//ArrayList para armazenar a base de dados e testes
+	//ArrayList para armazenar a base de dados e testData
 	private static ArrayList<Aposta> database = new ArrayList<>();
-	private static ArrayList<Aposta> testes = new ArrayList<>();
-	
-	public void setDatabase(ArrayList<Aposta> database) {
-		NaiveBayes.database = database;
-	}
-	
+	private static ArrayList<Aposta> trainingData = new ArrayList<>();
+	private static ArrayList<Aposta> testData = new ArrayList<>();
 	
 	/*
 	 * 
-	 * Método estático carregarDatabase() é responsável por carregar a base de dados vinda de um arquivo .csv
-	 * e armazená-la no ArrayList database.
+	 * Mï¿½todo estï¿½tico carregarDatabase() ï¿½ responsï¿½vel por carregar a base de dados vinda de um arquivo .csv
+	 * e armazenï¿½-la no ArrayList database.
 	 * 
-	 * O método recebe como argumento o caminho onde o arquivo .csv com a base de dados se encontra.
-	 * Ex.: D:\\PEDRO\\UFRPE\\5º Período\\Inteligência Artificial\\Projeto\\IA\\csv\\data.csv (para o SO windows)
+	 * O mï¿½todo recebe como argumento o caminho onde o arquivo .csv com a base de dados se encontra.
+	 * Ex.: D:\\PEDRO\\UFRPE\\5ï¿½ Perï¿½odo\\Inteligï¿½ncia Artificial\\Projeto\\IA\\csv\\data.csv (para o SO windows)
 	 * 
 	 * Para ler o arquivo usa-se um objeto do tipo BufferedReader, no seu construtor passamos um objeto do tipo
 	 * FileReader e no seu construtor passamos a String que recebemos como argumento com o caminho do arquivo.
 	 * 
-	 * Cada linha do arquivo (cada resultado de um jogo) é lido e armazenado na String resultado na parte do teste
+	 * Cada linha do arquivo (cada resultado de um jogo) ï¿½ lido e armazenado na String resultado na parte do teste
 	 * condicional, enquanto tiver resultados de jogos a serem lidos vamos armazenar os dados.
 	 * 
-	 * Um vetor de Strings é usado para armazenar as características de cada exemplo, o separador contido no .csv
-	 * é passado como argumento do método split (nesse caso, no arquivo indicado no caminho acima, o separador
-	 * de campos é ',').
+	 * Um vetor de Strings ï¿½ usado para armazenar as caracterï¿½sticas de cada exemplo, o separador contido no .csv
+	 * ï¿½ passado como argumento do mï¿½todo split (nesse caso, no arquivo indicado no caminho acima, o separador
+	 * de campos ï¿½ ',').
 	 * 
-	 * Após isso, alteramos os atributos de um objeto Aposta com o vetor de Strings contendo todas as característi-
+	 * Apï¿½s isso, alteramos os atributos de um objeto Aposta com o vetor de Strings contendo todas as caracterï¿½sti-
 	 * cas do exemplo. Ao final adicionamos ao ArrayList database.
 	 * 
 	 */
 	public static void carregarDatabase(String datapath) {
 		
-		String separador = ",";	//Separador de campos no arquivo .csv
+		String separador = ";";	//Separador de campos no arquivo .csv
 		String resultado = "";	//String para armazenar cada linha lida do arquivo .csv
 		BufferedReader conteudo = null;	//Objeto usado para ler a base de dados
 		
@@ -56,15 +53,15 @@ public class NaiveBayes {
 			conteudo = new BufferedReader(new FileReader(datapath));
 			while((resultado = conteudo.readLine()) != null) { //lendo cada linha do arquivo
 				
-				Aposta exemplo = new Aposta();	//Objeto que será usado para guardar os valores presentes no vetor de
+				Aposta exemplo = new Aposta();	//Objeto que serï¿½ usado para guardar os valores presentes no vetor de
 				//Strings e logo depois adicionado ao atributo da classe, database.
 				
-				//após a leitura, separa cada campo, especificando o separador, e 
+				//apï¿½s a leitura, separa cada campo, especificando o separador, e 
 				//armazenando no vetor de Strings
 				String[] caracteristica = resultado.split(separador);
 				
 				try { 	//Setando os atributos do objeto exemplo (Aposta) com os elementos
-						//do vetor de Strings que contém as características
+						//do vetor de Strings que contï¿½m as caracterï¿½sticas
 					exemplo.setEmCasa(Integer.parseInt(caracteristica[0]));
 					exemplo.setForaDeCasa(Integer.parseInt(caracteristica[1]));
 					exemplo.setVitorias5jogos(Integer.parseInt(caracteristica[2]));
@@ -91,16 +88,16 @@ public class NaiveBayes {
 					exemplo.setOppAllStars(Integer.parseInt(caracteristica[23]));
 					exemplo.setClasse(caracteristica[24]);
 				} catch (NumberFormatException e) {
-					System.out.println("Erro na Formatação: \n" + e.getMessage());
+					System.out.println("Erro na Formataï¿½ï¿½o: \n" + e.getMessage());
 				}
 				
-				//adicionando o resultado à base de dados
+				//adicionando o resultado ï¿½ base de dados
 				NaiveBayes.database.add(exemplo);
 				
 			}
 			
 		} catch (FileNotFoundException e) {
-			System.out.println("Arquivo não encontrado: \n" + e.getMessage());
+			System.out.println("Arquivo nï¿½o encontrado: \n" + e.getMessage());
 		}catch (IOException e) {
 			System.out.println("IO Exception: \n" + e.getMessage());
 		} finally {
@@ -113,35 +110,37 @@ public class NaiveBayes {
 			}
 		}
 		
+		dividirDatabase(database);
+		
 	}
 	
 	/*
 	 * 
-	 * Método estático carregartestes() é responsável por carregar os testes vinda de um arquivo .csv
-	 * e armazená-la no ArrayList testes.
+	 * Mï¿½todo estï¿½tico carregartestData() ï¿½ responsï¿½vel por carregar os testData vinda de um arquivo .csv
+	 * e armazenï¿½-la no ArrayList testData.
 	 * 
-	 * O método recebe como argumento o caminho onde o arquivo .csv com os testes se encontra.
-	 * Ex.: D:\\PEDRO\\UFRPE\\5º Período\\Inteligência Artificial\\Projeto\\IA\\csv\\data.csv (para o SO windows)
+	 * O mï¿½todo recebe como argumento o caminho onde o arquivo .csv com os testData se encontra.
+	 * Ex.: D:\\PEDRO\\UFRPE\\5ï¿½ Perï¿½odo\\Inteligï¿½ncia Artificial\\Projeto\\IA\\csv\\data.csv (para o SO windows)
 	 * 
 	 * Para ler o arquivo usa-se um objeto do tipo BufferedReader, no seu construtor passamos um objeto do tipo
 	 * FileReader e no seu construtor passamos a String que recebemos como argumento com o caminho do arquivo.
 	 * 
-	 * Cada linha do arquivo (cada resultado de um jogo) é lido e armazenado na String resultado na parte do teste
+	 * Cada linha do arquivo (cada resultado de um jogo) ï¿½ lido e armazenado na String resultado na parte do teste
 	 * condicional, enquanto tiver resultados de jogos a serem lidos vamos armazenar os dados.
 	 * 
-	 * Um vetor de Strings é usado para armazenar as características de cada exemplo, o separador contido no .csv
-	 * é passado como argumento do método split (nesse caso, no arquivo indicado no caminho acima, o separador
-	 * de campos é ',').
+	 * Um vetor de Strings ï¿½ usado para armazenar as caracterï¿½sticas de cada exemplo, o separador contido no .csv
+	 * ï¿½ passado como argumento do mï¿½todo split (nesse caso, no arquivo indicado no caminho acima, o separador
+	 * de campos ï¿½ ',').
 	 * 
-	 * Após isso, alteramos os atributos de um objeto Aposta com o vetor de Strings contendo todas as característi-
-	 * cas do exemplo. Ao final adicionamos ao ArrayList testes.
+	 * Apï¿½s isso, alteramos os atributos de um objeto Aposta com o vetor de Strings contendo todas as caracterï¿½sti-
+	 * cas do exemplo. Ao final adicionamos ao ArrayList testData.
 	 * 
 	 */
-	public static void carregarTestes(String datapath) {
+	public static void carregarTestData(String datapath) {
 		
 		String separador = ",";	//Separador de campos no arquivo .csv
 		String resultado = "";	//String para armazenar cada linha lida do arquivo .csv
-		BufferedReader conteudo = null;	//Objeto usado para ler a base de dados dos testes
+		BufferedReader conteudo = null;	//Objeto usado para ler a base de dados dos testData
 		
 		try {
 			
@@ -149,15 +148,15 @@ public class NaiveBayes {
 			conteudo = new BufferedReader(new FileReader(datapath));
 			while((resultado = conteudo.readLine()) != null) { //lendo cada linha do arquivo
 				
-				Aposta test = new Aposta();	//Objeto que será usado para guardar os valores presentes no vetor de
+				Aposta test = new Aposta();	//Objeto que serï¿½ usado para guardar os valores presentes no vetor de
 				//Strings e logo depois adicionado ao atributo da classe, database.
 				
-				//após a leitura, separa cada campo, especificando o separador, e 
+				//apï¿½s a leitura, separa cada campo, especificando o separador, e 
 				//armazenando no vetor de Strings
 				String[] caracteristica = resultado.split(separador);
 				
 				try { 	//Setando os atributos do objeto exemplo (Aposta) com os elementos
-						//do vetor de Strings que contém as características
+						//do vetor de Strings que contï¿½m as caracterï¿½sticas
 					test.setEmCasa(Integer.parseInt(caracteristica[0]));
 					test.setForaDeCasa(Integer.parseInt(caracteristica[1]));
 					test.setVitorias5jogos(Integer.parseInt(caracteristica[2]));
@@ -184,15 +183,15 @@ public class NaiveBayes {
 					test.setOppAllStars(Integer.parseInt(caracteristica[23]));
 					test.setClasse(caracteristica[24]);
 				} catch (NumberFormatException e) {
-					System.out.println("Erro na Formatação: \n" + e.getMessage());
+					System.out.println("Erro na Formataï¿½ï¿½o: \n" + e.getMessage());
 				}
 				
-				//adicionando o resultado à base de dados de testes
-				NaiveBayes.testes.add(test);
+				//adicionando o resultado ï¿½ base de dados de testData
+				NaiveBayes.testData.add(test);
 			}
 			
 		} catch (FileNotFoundException e) {
-			System.out.println("Arquivo não encontrado: \n" + e.getMessage());
+			System.out.println("Arquivo nï¿½o encontrado: \n" + e.getMessage());
 		}catch (IOException e) {
 			System.out.println("IO Exception: \n" + e.getMessage());
 		} finally {
@@ -209,30 +208,99 @@ public class NaiveBayes {
 	
 	/*
 	 * 
-	 * Método run é o método que contém o algoritmo em si, ele recebe como argumento a aposta que o usuário quer
+	 * Esse mÃ©todo Ã© responsÃ¡vel pela divisÃ£o da base de dados, essa divisÃ£o se
+	 * dÃ¡ em 2/3 para treinamento e 1/3 para testes.
+	 * 
+	 * O mÃ©todo recebe como argumento a base de dados (que Ã© um ArrayList de Aposta) e
+	 * ao final da sua execuÃ§Ã£o a base de dados Ã© dividida em outros dois ArrayLists,
+	 * um para os exemplos que serÃ£o utilizados no treinamento e outro para os exemplos
+	 * que serÃ£o utilizados no teste. 
+	 * 
+	 */
+	private static void dividirDatabase(ArrayList<Aposta> database) {
+		
+		Random numero = new Random(); //gerador de nÃºmeros aleatÃ³rios para gerar os Ã­ndices.
+		
+		int qtdExemplos = database.size(); //variÃ¡vel com a quantidade de exemplos na base de dados.
+		int tamTreino = (qtdExemplos * 2) / 3; //separando 2/3 da base de dados para treinamento.
+		int tamTeste = qtdExemplos - tamTreino; //separando 1/3 da base de dados para teste.
+		
+		int indice = 0; //variÃ¡vel que guardarÃ¡ o Ã­ndice.
+		int count = 0;
+		//ArrayList com os Ã­ndices dos elementos da base de dados que foram usados pelo conjunto de treinamento.
+		ArrayList<Integer> indiceTreino = new ArrayList<>();  
+		
+		// Enquanto o contador for menor que 2/3 da base de dados (tamanho do conjunto de treinamento),
+		// um nÃºmero aleatÃ³rio Ã© gerado e posto na variÃ¡vel Ã­ndice. ApÃ³s isso verifica-se se esse Ã­ndice
+		// jÃ¡ foi escolhido anteriormente; caso nÃ£o tenha sido escolhido Ã© adicionado ao Array indiceTreino
+		// e o elemento da base de dados, cujo Ã­ndice foi escolhido aleatoriamente, Ã© adicionado ao conjunto
+		// de treinamento.
+		while(count < tamTreino) {
+			
+			indice = numero.nextInt(qtdExemplos);
+			
+			if(!indiceTreino.contains(indice)) {
+				
+				indiceTreino.add(indice);
+				trainingData.add(NaiveBayes.database.get(indice));
+				count++;
+			}
+			
+		}
+		
+		count = 0;
+		indice = 0;
+		//ArrayList com os Ã­ndices dos elementos da base de dados que foram usados pelo conjunto de treinamento.
+		ArrayList<Integer> indiceTeste = new ArrayList<>();
+		
+		// Enquanto o contador for menor que 1/3 da base de dados (tamanho do conjunto de testes),
+		// um nÃºmero aleatÃ³rio Ã© gerado e posto na variÃ¡vel Ã­ndice. ApÃ³s isso verifica-se se esse Ã­ndice
+		// jÃ¡ foi escolhido anteriormente; caso nÃ£o tenha sido escolhido Ã© adicionado ao Array indiceTeste
+		// e o elemento da base de dados, cujo Ã­ndice foi escolhido aleatoriamente, Ã© adicionado ao conjunto
+		// de testes.
+		while(count < tamTeste) {
+			
+			indice = numero.nextInt(qtdExemplos);
+			
+			if(!indiceTreino.contains(indice) && !indiceTeste.contains(indice)) {
+				
+				indiceTeste.add(indice);
+				testData.add(NaiveBayes.database.get(indice));
+				count++;
+				
+			}
+			
+		}
+		
+		
+	}
+	
+	/*
+	 * 
+	 * Mï¿½todo run ï¿½ o mï¿½todo que contï¿½m o algoritmo em si, ele recebe como argumento a aposta que o usuï¿½rio quer
 	 * classificar, tal objeto tem o campo classe vazio.
 	 * 
-	 * O funcionamento do algoritmo é o mesmo que vimos em sala, primeiro calculamos P(Sim) e P(Nao) que estão
-	 * armazenados nas variáveis pSim e pNao respectivamente. Após isso calculamos P(X|Sim) e P(X|Nao), onde X
-	 * é cada atributo do vetor de caracteristica da classe Aposta.
+	 * O funcionamento do algoritmo ï¿½ o mesmo que vimos em sala, primeiro calculamos P(Sim) e P(Nao) que estï¿½o
+	 * armazenados nas variï¿½veis pSim e pNao respectivamente. Apï¿½s isso calculamos P(X|Sim) e P(X|Nao), onde X
+	 * ï¿½ cada atributo do vetor de caracteristica da classe Aposta.
 	 * 
-	 * Todas as probabilidades dos atributos estão armazenadas nas variáves pXSim e pXNao.
+	 * Todas as probabilidades dos atributos estï¿½o armazenadas nas variï¿½ves pXSim e pXNao.
 	 * 
 	 */
 	public static String classificar(Aposta aposta) {
 		
-		//Variáveis para o cálculo final.
+		//Variï¿½veis para o cï¿½lculo final.
 		double probabilidadeDeSim = 0;
 		double probabilidadeDeNao = 0;
 		
 		String resultado = "";	//String que retorna a classe final.
 		
-		double pSim = 0, pNao = 0;	//Variáveis que guardam P(Sim) e P(Não).
-		int countPSim = 0, countPNao = 0; //Variáveis que guardam o número de exemplos classificados como Sim e Nao.
-		int countSim = 0, countNao = 0;	//Variáveis que guardam o numero de atributos na base de dados iguais ao 
+		double pSim = 0, pNao = 0;	//Variï¿½veis que guardam P(Sim) e P(Nï¿½o).
+		int countPSim = 0, countPNao = 0; //Variï¿½veis que guardam o nï¿½mero de exemplos classificados como Sim e Nao.
+		int countSim = 0, countNao = 0;	//Variï¿½veis que guardam o numero de atributos na base de dados iguais ao 
 										//atributo do objeto passado como argumento.
 		
-		//Variáveis que guardam P(X|Sim) e P(X|Nao)
+		//Variï¿½veis que guardam P(X|Sim) e P(X|Nao)
 		double pEmCasaSim = 0, pEmCasaNao = 0;
 		double pForaDeCasaSim = 0, pForaDeCasaNao = 0;
 		double pVitorias5jogosSim = 0, pVitorias5jogosNao = 0;
@@ -267,7 +335,7 @@ public class NaiveBayes {
 			}
 		}
 		
-		//Cálculo P(Sim) e P(Não)
+		//Cï¿½lculo P(Sim) e P(Nï¿½o)
 		pSim = (double) countPSim / NaiveBayes.database.size();
 		pNao = (double) countPNao / NaiveBayes.database.size();
 		
@@ -288,10 +356,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(EmCasa|Sim) e P(EmCasa|Nao).
+		//Cï¿½lculo P(EmCasa|Sim) e P(EmCasa|Nao).
 		pEmCasaSim = (double) countSim / countPSim;
 		pEmCasaNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -312,10 +380,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(ForaDeCasa|Sim) e P(ForaDeCasa|Nao).
+		//Cï¿½lculo P(ForaDeCasa|Sim) e P(ForaDeCasa|Nao).
 		pForaDeCasaSim = (double) countSim / countPSim;
 		pForaDeCasaNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -336,10 +404,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 			
-		//Cálculo P(Vitorias5jogos|Sim) e P(Vitorias5jogos|Nao).
+		//Cï¿½lculo P(Vitorias5jogos|Sim) e P(Vitorias5jogos|Nao).
 		pVitorias5jogosSim = (double) countSim / countPSim;
 		pVitorias5jogosNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -360,10 +428,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(Derrotas5jogos|Sim) e P(Derrotas5jogos|Nao).
+		//Cï¿½lculo P(Derrotas5jogos|Sim) e P(Derrotas5jogos|Nao).
 		pDerrotas5jogosSim = (double) countSim / countPSim;
 		pDerrotas5jogosNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -384,10 +452,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(Streak|Sim) e P(Streak|Nao).
+		//Cï¿½lculo P(Streak|Sim) e P(Streak|Nao).
 		pStreakSim = (double) countSim / countPSim;
 		pStreakNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -408,10 +476,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(Conferencia|Sim) e P(Conferencia|Nao).
+		//Cï¿½lculo P(Conferencia|Sim) e P(Conferencia|Nao).
 		pConferenciaSim = (double) countSim / countPSim;
 		pConferenciaNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -432,10 +500,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(Score|Sim) e P(Score|Nao).
+		//Cï¿½lculo P(Score|Sim) e P(Score|Nao).
 		pScoreSim = (double) countSim / countPSim;
 		pScoreNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -456,10 +524,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(Posicao|Sim) e P(Posicao|Nao).
+		//Cï¿½lculo P(Posicao|Sim) e P(Posicao|Nao).
 		pPosicaoSim = (double) countSim / countPSim;
 		pPosicaoNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -480,10 +548,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(b2b|Sim) e P(b2b|Nao).
+		//Cï¿½lculo P(b2b|Sim) e P(b2b|Nao).
 		pb2bSim = (double) countSim / countPSim;
 		pb2bNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -504,10 +572,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(RoadTrip|Sim) e P(RoadTrip|Nao).
+		//Cï¿½lculo P(RoadTrip|Sim) e P(RoadTrip|Nao).
 		pRoadTripSim = (double) countSim / countPSim;
 		pRoadTripNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -528,10 +596,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(TitularLesionado|Sim) e P(TitularLesionado|Nao).
+		//Cï¿½lculo P(TitularLesionado|Sim) e P(TitularLesionado|Nao).
 		pTitularLesionadoSim = (double) countSim / countPSim;
 		pTitularLesionadoNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -552,10 +620,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(AllStars|Sim) e P(AllStars|Nao).
+		//Cï¿½lculo P(AllStars|Sim) e P(AllStars|Nao).
 		pAllStarsSim = (double) countSim / countPSim;
 		pAllStarsNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -580,10 +648,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(OppEmCasa|Sim) e P(OppEmCasa|Nao).
+		//Cï¿½lculo P(OppEmCasa|Sim) e P(OppEmCasa|Nao).
 		pOppEmCasaSim = (double) countSim / countPSim;
 		pOppEmCasaNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -604,10 +672,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(OppForaDeCasa|Sim) e P(OppForaDeCasa|Nao).
+		//Cï¿½lculo P(OppForaDeCasa|Sim) e P(OppForaDeCasa|Nao).
 		pOppForaDeCasaSim = (double) countSim / countPSim;
 		pOppForaDeCasaNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -628,10 +696,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(OppVitorias5jogos|Sim) e P(OppVitorias5jogos|Nao).
+		//Cï¿½lculo P(OppVitorias5jogos|Sim) e P(OppVitorias5jogos|Nao).
 		pOppVitorias5jogosSim = (double) countSim / countPSim;
 		pOppVitorias5jogosNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -652,10 +720,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(OppDerrotas5jogos|Sim) e P(OppDerrotas5jogos|Nao).
+		//Cï¿½lculo P(OppDerrotas5jogos|Sim) e P(OppDerrotas5jogos|Nao).
 		pOppDerrotas5jogosSim = (double) countSim / countPSim;
 		pOppDerrotas5jogosNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -676,10 +744,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(OppStreak|Sim) e P(OppStreak|Nao).
+		//Cï¿½lculo P(OppStreak|Sim) e P(OppStreak|Nao).
 		pOppStreakSim = (double) countSim / countPSim;
 		pOppStreakNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -700,10 +768,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(OppConferencia|Sim) e P(OppConferencia|Nao).
+		//Cï¿½lculo P(OppConferencia|Sim) e P(OppConferencia|Nao).
 		pOppConferenciaSim = (double) countSim / countPSim;
 		pOppConferenciaNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -724,10 +792,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(OppScore|Sim) e P(OppScore|Nao).
+		//Cï¿½lculo P(OppScore|Sim) e P(OppScore|Nao).
 		pOppScoreSim = (double) countSim / countPSim;
 		pOppScoreNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -748,10 +816,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(OppPosicao|Sim) e P(OppPosicao|Nao).
+		//Cï¿½lculo P(OppPosicao|Sim) e P(OppPosicao|Nao).
 		pOppPosicaoSim = (double) countSim / countPSim;
 		pOppPosicaoNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -772,10 +840,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(OppB2b|Sim) e P(OppB2b|Nao).
+		//Cï¿½lculo P(OppB2b|Sim) e P(OppB2b|Nao).
 		pOppB2bSim = (double) countSim / countPSim;
 		pOppB2bNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -796,10 +864,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(OppRoadTrip|Sim) e P(OppRoadTrip|Nao).
+		//Cï¿½lculo P(OppRoadTrip|Sim) e P(OppRoadTrip|Nao).
 		pOppRoadTripSim = (double) countSim / countPSim;
 		pOppRoadTripNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -820,10 +888,10 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(OppTitularLesionado|Sim) e P(OppTitularLesionado|Nao).
+		//Cï¿½lculo P(OppTitularLesionado|Sim) e P(OppTitularLesionado|Nao).
 		pOppTitularLesionadoSim = (double) countSim / countPSim;
 		pOppTitularLesionadoNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 		
@@ -844,16 +912,16 @@ public class NaiveBayes {
 		if (countSim == 0) countSim++;
 		if (countNao == 0) countNao++;
 		
-		//Cálculo P(OppAllStars|Sim) e P(OppAllStars|Nao).
+		//Cï¿½lculo P(OppAllStars|Sim) e P(OppAllStars|Nao).
 		pOppAllStarsSim = (double) countSim / countPSim;
 		pOppAllStarsNao = (double) countNao / countPNao;
-		//Zerando as variáveis para uso no próximo atributo.
+		//Zerando as variï¿½veis para uso no prï¿½ximo atributo.
 		countSim = 0;
 		countNao = 0;
 			
 		//Calcular P(X|Sim) e P(X|Nao) para os outros atributos.
 		
-		//Cálculo final da probabilidade
+		//Cï¿½lculo final da probabilidade
 		probabilidadeDeSim = pSim * pEmCasaSim * pForaDeCasaSim * pVitorias5jogosSim * pDerrotas5jogosSim * 
 				pStreakSim * pConferenciaSim * pScoreSim * pPosicaoSim * pb2bSim * pRoadTripSim * pTitularLesionadoSim * 
 				pAllStarsSim * pOppEmCasaSim * pOppForaDeCasaSim * pOppVitorias5jogosSim * pOppDerrotas5jogosSim * 
@@ -866,7 +934,7 @@ public class NaiveBayes {
 				pOppStreakNao * pOppConferenciaNao * pOppScoreNao * pOppPosicaoNao * pOppB2bNao * pOppRoadTripNao * 
 				pOppTitularLesionadoNao * pOppAllStarsNao;
 		
-		System.out.println(probabilidadeDeSim + " " + probabilidadeDeNao);
+		//System.out.println(probabilidadeDeSim + " " + probabilidadeDeNao);
 		
 		resultado = (probabilidadeDeSim >= probabilidadeDeNao) ? "sim" : "nao";
 		return resultado;
@@ -874,27 +942,91 @@ public class NaiveBayes {
 	}
 	
 	/*
-	 * Método que classifica todos os testes armazenados no ArrayList
+	 * Mï¿½todo que classifica todos os testData armazenados no ArrayList
 	 * */
-	public static void classificarTestes() {
+	public static void classificarTestData() {
 		
-		int totalTesteCorreto = 0, totalTesteIncorreto = 0;
+		int verdadeiroPositivo = 0, verdadeiroNegativo = 0, falsoPositivo = 0, falsoNegativo = 0;
 		
-		for (int i = 0; i < testes.size(); i++) {
-			Aposta aposta = testes.get(i);
+		for (int i = 0; i < testData.size(); i++) {
+			Aposta aposta = testData.get(i);
 			String resultado = classificar(aposta);
-			System.out.println("Aposta " + (i+1) + " = " + resultado);
+			//System.out.println("Aposta " + (i+1) + " = " + resultado);
+			
 			if (aposta.getClasse().equals(resultado)) {
-				totalTesteCorreto++;
+				if(aposta.getClasse().equals("sim")) {
+					verdadeiroPositivo++;
+				} else {
+					verdadeiroNegativo++;
+				}
 			} else {
-				totalTesteIncorreto++;
+				if(aposta.getClasse().equals("sim")) {
+					falsoNegativo++;
+				} else {
+					falsoPositivo++;
+				}
 			}
+			
 		}
 		
-		System.out.println("\nTestes classificados corretamente = " + totalTesteCorreto);
-		System.out.println("Testes classificados incorretamente = " + totalTesteIncorreto);
-		double taxa = (double) totalTesteCorreto/ (double) (totalTesteIncorreto + totalTesteCorreto) * 100;
-		System.out.printf("Taxa de acerto = %.2f %%", taxa);
+		System.out.println("Quantidade de Exemplos: " + NaiveBayes.database.size());
+		System.out.println("Quantidade de Exemplos de Treino: " + NaiveBayes.trainingData.size());
+		System.out.println("Quantidade de Exemplos de Teste: " + NaiveBayes.testData.size());
+		
+		imprimeMatrizConfusao(verdadeiroPositivo, verdadeiroNegativo, falsoPositivo, falsoNegativo);
+		exibirMetricas(verdadeiroPositivo, verdadeiroNegativo, falsoPositivo, falsoNegativo);
+		
+	}
+	
+	/*
+	 * 
+	 * MÃ©todo que imprime a Matriz de ConfusÃ£o
+	 * 
+	 * Os argumentos do mÃ©todo sÃ£o:
+	 * 	-> Verdadeiro Positivo
+	 *  -> Verdadeiro Negativo
+	 *  -> Falso Positivo
+	 *  -> Falso Negativo
+	 *  
+	 */
+	private static void imprimeMatrizConfusao(int vp, int vn, int fp, int fn) {
+		System.out.println("\n========== Matriz de Confusao ==========\n");
+		System.out.printf("%6s %6s  \t<-- classificado como\n", "a", "b");
+		System.out.printf("%6d %6d %4c\ta = sim\n", vp, fn, '|');
+		System.out.printf("%6d %6d %4c\tb = nao\n\n", fp, vn, '|');
+	}
+	
+	
+	/*
+	 * 
+	 * MÃ©todo que imprime as MÃ©tricas para a AvaliaÃ§Ã£o de Desempenho, tais mÃ©tricas sÃ£o:
+	 *  + AcurÃ¡cia
+	 *  + Erro
+	 *  + PrecisÃ£o
+	 *  + RelevÃ¢ncia
+	 *  + F-Measure
+	 * 
+	 * Os argumentos do mÃ©todo sÃ£o:
+	 * 	-> Verdadeiro Positivo
+	 *  -> Verdadeiro Negativo
+	 *  -> Falso Positivo
+	 *  -> Falso Negativo
+	 *  
+	 */
+	private static void exibirMetricas(int vp, int vn, int fp, int fn) {
+		
+		float acuracia = (float) (vp + vn) / (float) (vp + vn + fp + fn);
+		float erro = (float) (fp + fn) / (float) (vp + vn + fp + fn);
+		float precision = (float) vp / (float) (vp + fp);
+		float recall = (float) vp / (float) (vp + fn);
+		float fMeasure = (2 * ((precision * recall) / (precision + recall)));
+		
+		System.out.printf("Acuracia: %7.4f\n", acuracia);
+		System.out.printf("Erro: %11.4f\n", erro);
+		System.out.printf("Precision: %6.4f\n", precision);
+		System.out.printf("Recall: %9.4f\n", recall);
+		System.out.printf("F-Measure: %6.4f\n", fMeasure);
+		
 	}
 	
 }

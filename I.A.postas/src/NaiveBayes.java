@@ -19,6 +19,7 @@ public class NaiveBayes {
 	private static ArrayList<Aposta> trainingData = new ArrayList<>();
 	private static ArrayList<Aposta> testData = new ArrayList<>();
 	
+	
 	/*
 	 * 
 	 * M�todo est�tico carregarDatabase() � respons�vel por carregar a base de dados vinda de um arquivo .csv

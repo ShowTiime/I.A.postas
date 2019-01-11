@@ -35,7 +35,7 @@ public class NaiveBayes {
 	 * condicional, enquanto tiver resultados de jogos a serem lidos vamos armazenar os dados.
 	 * 
 	 * Um vetor de Strings � usado para armazenar as caracter�sticas de cada exemplo, o separador contido no .csv
-	 * � passado como argumento do m�todo split (nesse caso, no arquivo indicado no caminho acima, o separador
+	 * � passado como argumento do m�todo split (ne,sse caso, no arquivo indicado no caminho acima, o separador
 	 * de campos � ',').
 	 * 
 	 * Ap�s isso, alteramos os atributos de um objeto Aposta com o vetor de Strings contendo todas as caracter�sti-
@@ -110,6 +110,17 @@ public class NaiveBayes {
 				}
 			}
 		}
+		
+		int sim = 0, nao = 0;
+		
+		for(int i = 0; i < database.size(); i++) {
+			if(database.get(i).getClasse().equals("sim")) {
+				sim++;
+			} else {
+				nao++;
+			}
+		}
+		System.out.println("Sim: " + sim + "\tNao: " + nao);
 		
 		dividirDatabase(database);
 		
@@ -226,6 +237,10 @@ public class NaiveBayes {
 		int tamTreino = (qtdExemplos * 2) / 3; //separando 2/3 da base de dados para treinamento.
 		int tamTeste = qtdExemplos - tamTreino; //separando 1/3 da base de dados para teste.
 		
+		int qtdSimTreino = tamTreino / 2, qtdNaoTreino = tamTreino - qtdSimTreino;
+		int qtdSimTeste = tamTeste / 2, qtdNaoTeste = tamTeste - qtdSimTeste;
+		int sim = 0, nao = 0;
+		
 		int indice = 0; //variável que guardará o índice.
 		int count = 0;
 		//ArrayList com os índices dos elementos da base de dados que foram usados pelo conjunto de treinamento.
@@ -242,13 +257,28 @@ public class NaiveBayes {
 			
 			if(!indiceTreino.contains(indice)) {
 				
-				indiceTreino.add(indice);
-				trainingData.add(NaiveBayes.database.get(indice));
-				count++;
+				if(NaiveBayes.database.get(indice).getClasse().equals("sim")) {
+					if(sim != qtdSimTreino) {
+						indiceTreino.add(indice);
+						trainingData.add(NaiveBayes.database.get(indice));
+						count++;
+						sim++;
+					}
+				} else {
+					if(nao != qtdNaoTreino) {
+						indiceTreino.add(indice);
+						trainingData.add(NaiveBayes.database.get(indice));
+						count++;
+						nao++;
+					}
+				}
+								
 			}
 			
 		}
 		
+		sim = 0;
+		nao = 0;
 		count = 0;
 		indice = 0;
 		//ArrayList com os índices dos elementos da base de dados que foram usados pelo conjunto de treinamento.
@@ -265,10 +295,22 @@ public class NaiveBayes {
 			
 			if(!indiceTreino.contains(indice) && !indiceTeste.contains(indice)) {
 				
-				indiceTeste.add(indice);
-				testData.add(NaiveBayes.database.get(indice));
-				count++;
-				
+				if(NaiveBayes.database.get(indice).getClasse().equals("sim")) {
+					if(sim != qtdSimTeste) {
+						indiceTeste.add(indice);
+						testData.add(NaiveBayes.database.get(indice));
+						count++;
+						sim++;
+					}
+				} else {
+					if(nao != qtdNaoTeste) {
+						indiceTeste.add(indice);
+						testData.add(NaiveBayes.database.get(indice));
+						count++;
+						nao++;
+					}
+				}
+			
 			}
 			
 		}
@@ -970,12 +1012,35 @@ public class NaiveBayes {
 			
 		}
 		
+		int matrizConfusao[][] = {	{verdadeiroPositivo, falsoNegativo},
+									{falsoPositivo, verdadeiroNegativo}};
+		
+		int sim = 0, nao = 0;
+		for(int i = 0; i < trainingData.size(); i++) {
+			if(trainingData.get(i).getClasse().equals("sim")) {
+				sim++;
+			} else {
+				nao++;
+			}
+		}
+		System.out.println("Sim(Treino): " + sim + "\tNao(Treino): " + nao);
+		
+		sim = 0; nao = 0;
+		for(int i = 0; i < testData.size(); i++) {
+			if(testData.get(i).getClasse().equals("sim")) {
+				sim++;
+			} else {
+				nao++;
+			}
+		}		
+		System.out.println("Sim(Teste): " + sim + "\tNao(Teste): " + nao + "\n");
+		
 		System.out.println("Quantidade de Exemplos: " + NaiveBayes.database.size());
 		System.out.println("Quantidade de Exemplos de Treino: " + NaiveBayes.trainingData.size());
 		System.out.println("Quantidade de Exemplos de Teste: " + NaiveBayes.testData.size());
 		
-		imprimeMatrizConfusao(verdadeiroPositivo, verdadeiroNegativo, falsoPositivo, falsoNegativo);
-		exibirMetricas(verdadeiroPositivo, verdadeiroNegativo, falsoPositivo, falsoNegativo);
+		imprimeMatrizConfusao(matrizConfusao);
+		exibirMetricas(matrizConfusao);
 		
 	}
 	
@@ -990,11 +1055,11 @@ public class NaiveBayes {
 	 *  -> Falso Negativo
 	 *  
 	 */
-	private static void imprimeMatrizConfusao(int vp, int vn, int fp, int fn) {
+	private static void imprimeMatrizConfusao(int m[][]) {
 		System.out.println("\n========== Matriz de Confusao ==========\n");
 		System.out.printf("%6s %6s  \t<-- classificado como\n", "a", "b");
-		System.out.printf("%6d %6d %4c\ta = sim\n", vp, fn, '|');
-		System.out.printf("%6d %6d %4c\tb = nao\n\n", fp, vn, '|');
+		System.out.printf("%6d %6d %4c\ta = sim\n", m[0][0], m[0][1], '|');
+		System.out.printf("%6d %6d %4c\tb = nao\n\n", m[1][0], m[1][1], '|');
 	}
 	
 	
@@ -1014,19 +1079,35 @@ public class NaiveBayes {
 	 *  -> Falso Negativo
 	 *  
 	 */
-	private static void exibirMetricas(int vp, int vn, int fp, int fn) {
+	private static void exibirMetricas(int m[][]) {
 		
-		float acuracia = (float) (vp + vn) / (float) (vp + vn + fp + fn);
-		float erro = (float) (fp + fn) / (float) (vp + vn + fp + fn);
-		float precision = (float) vp / (float) (vp + fp);
-		float recall = (float) vp / (float) (vp + fn);
-		float fMeasure = (2 * ((precision * recall) / (precision + recall)));
+		float acuracia = (float) (m[0][0] + m[1][1]) / (float) (m[0][0] + m[1][1] + m[0][1] + m[1][0]);
+		float erro = (float) (m[0][1] + m[1][0]) / (float) (m[0][0] + m[1][1] + m[0][1] + m[1][0]);
 		
-		System.out.printf("Acuracia: %7.4f\n", acuracia);
-		System.out.printf("Erro: %11.4f\n", erro);
-		System.out.printf("Precision: %6.4f\n", precision);
-		System.out.printf("Recall: %9.4f\n", recall);
-		System.out.printf("F-Measure: %6.4f\n", fMeasure);
+		//avaliando sim
+		float precisionSim = (float) m[0][0] / (float) (m[0][0] + m[1][0]);
+		float recallSim = (float) m[0][0] / (float) (m[0][0] + m[0][1]);
+		float fMeasureSim = (2 * ((precisionSim * recallSim) / (precisionSim + recallSim)));
+		
+		//avaliando nao
+		float precisionNao = (float) m[1][1] / (float) (m[1][1] + m[0][1]);
+		float recallNao = (float) m[1][1] / (float) (m[1][1] + m[1][0]);
+		float fMeasureNao = (2 * ((precisionNao * recallNao) / (precisionNao + recallNao)));
+		
+		float fMeasure = (fMeasureSim + fMeasureNao) / 2;
+		
+		System.out.printf("Acuracia: %12.4f\n", acuracia);
+		System.out.printf("Erro: %16.4f\n\n", erro);
+		
+		System.out.printf("Precision(Sim): %6.4f\n", precisionSim);
+		System.out.printf("Recall(Sim): %9.4f\n", recallSim);
+		System.out.printf("F-Measure(Sim): %6.4f\n\n", fMeasureSim);
+		
+		System.out.printf("Precision(Nao): %6.4f\n", precisionNao);
+		System.out.printf("Recall(Nao): %9.4f\n", recallNao);
+		System.out.printf("F-Measure(Nao): %6.4f\n\n", fMeasureNao);
+		
+		System.out.printf("F-Measure: %11.4f\n\n", fMeasure);
 		
 	}
 	
